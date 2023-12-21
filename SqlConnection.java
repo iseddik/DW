@@ -11,7 +11,7 @@ public class SqlConnection {
         this.url = url;
         this.username = username;
         this.password = password;
-    }
+    } 
 
 
     public Connection connect(String database){
