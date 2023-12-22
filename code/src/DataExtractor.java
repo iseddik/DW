@@ -1,3 +1,5 @@
+import java.util.List;
+
 public interface DataExtractor {
-    void extractData();
+    void extractData(List<String> columns);
 }
