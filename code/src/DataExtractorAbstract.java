@@ -1,6 +1,6 @@
 import java.sql.*;
 
-public abstract class DataExtractorAbstract implements DataExtractor {
+public class DataExtractorAbstract implements DataExtractor {
     private String tableName;
     private Connection jdbcConnection;
 
@@ -11,15 +11,13 @@ public abstract class DataExtractorAbstract implements DataExtractor {
 
     @Override
     public void extractData() {
-        Statement statement;
-        ResultSet resultSet;
         try {
-            statement = this.jdbcConnection.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM " + this.tableName);
+            Statement statement = this.jdbcConnection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + tableName);
+            System.out.println("here!");
+            System.out.println(resultSet.toString());
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-
     }
 }
