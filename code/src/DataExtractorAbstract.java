@@ -14,8 +14,9 @@ public class DataExtractorAbstract implements DataExtractor {
         try {
             Statement statement = this.jdbcConnection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM " + tableName);
-            System.out.println("here!");
-            System.out.println(resultSet.toString());
+            while (resultSet.next()) {
+                System.out.println(resultSet.getString("FirstName"));
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
