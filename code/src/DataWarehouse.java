@@ -4,7 +4,7 @@ import java.util.List;
 public class DataWarehouse {
     private String dbURL = "jdbc:sqlserver://localhost\\SQLSERVER19:1433;databaseName=Hello;encrypt=false;trustServerCertificate=false";
     private String user = "sa";
-    private String pass = "JBoussouf";
+    private String pass = "123";
     private Connection conn;
     public void loadPersonData(ResultSet personData, List<String> columns, String tableName){
 

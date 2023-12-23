@@ -9,7 +9,7 @@ public class test {
         
         String dbURL = "jdbc:sqlserver://localhost\\SQLSERVER19:1433;databaseName=AdventureWorksDW2016;encrypt=false;trustServerCertificate=false";
         String user = "sa";
-        String pass = "JBoussouf";
+        String pass = "123";
         Connection conn;
         try {
             conn = DriverManager.getConnection(dbURL, user, pass);
