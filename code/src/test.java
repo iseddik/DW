@@ -15,11 +15,12 @@ public class test {
             conn = DriverManager.getConnection(dbURL, user, pass);
             if (conn != null) {
                 System.out.println("Connected!");
-                DataExtractorAbstract ex = new DataExtractorAbstract("DimEmployee", conn);
+                SQLServerExtractor sqlExtractor = new SQLServerExtractor("DimEmployee", conn);
+                //System.err.println(ex.tableName);
                 List<String> myList = new ArrayList<>();
                 myList.add("FirstName");
                 myList.add("LastName");
-                ex.extractData(myList);
+                sqlExtractor.extractData(myList);
             }
         } catch (SQLException e) {
             e.printStackTrace();

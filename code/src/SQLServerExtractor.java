@@ -1,14 +1,19 @@
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class SQLServerExtractor extends DataExtractorAbstract {
+public class SQLServerExtractor implements DataExtractor {
 
     private Connection jdbcConnection;
+    private String tableName;
+    private Map<String, List<String>> stringMap;
 
     public SQLServerExtractor(String tableName, Connection jdbcConnection) {
-        super(tableName);
+        this.tableName = tableName;
         this.jdbcConnection = jdbcConnection;
+        this.stringMap = new HashMap<>();
     }
     
 
@@ -38,13 +43,13 @@ public class SQLServerExtractor extends DataExtractorAbstract {
                 }
             }
 
-            /* 
+             
             for(int i=0; i<stringMap.get(columns.get(0)).size(); i++){
                 for (String el: columns){
                     System.out.print(stringMap.get(el).get(i) + "\t");
                 }
                 System.out.println();
-            }*/
+            }
             //DataWarehouse dw = new DataWarehouse();
             //dw.loadPersonData(resultSet, columns, "Person");
         } catch (SQLException e) {
