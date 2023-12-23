@@ -18,7 +18,8 @@ public class SQLServerExtractor implements DataExtractor {
     
 
     @Override
-    public void extractData(List<String> columns) {
+    public void extractData(HashMap<String, List<String>> feat_map) {
+        List<String> columns = feat_map.get("SQL");
         String cls = "";
 
         for (int i=0; i<columns.size(); i++){
@@ -44,19 +45,19 @@ public class SQLServerExtractor implements DataExtractor {
             }
 
              
-            for(int i=0; i<stringMap.get(columns.get(0)).size(); i++){
-                for (String el: columns){
-                    System.out.print(stringMap.get(el).get(i) + "\t");
-                }
-                System.out.println();
-            }
-            //DataWarehouse dw = new DataWarehouse();
-            //dw.loadPersonData(resultSet, columns, "Person");
+//            for(int i=0; i<stringMap.get(columns.get(0)).size(); i++){
+//                for (String el: columns){
+//                    System.out.print(stringMap.get(el).get(i) + "\t");
+//                }
+//                System.out.println();
+//            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-
-    
+    public Map<String, List<String>> getStringMap() {
+        return stringMap;
+    }
 }
