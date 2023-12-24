@@ -6,7 +6,7 @@ import java.util.Map;
 public class DataWarehouse {
     private String dbURL = "jdbc:sqlserver://localhost\\SQLSERVER19:1433;databaseName=Hello;encrypt=false;trustServerCertificate=false";
     private String user = "sa";
-    private String pass = "JBoussouf";
+    private String pass = "123";
     private Connection conn;
     public void loadPersonData(Map<String, List<String>> stringMap, HashMap<String, List<String>> feat_map,String source,String tableName){
         List<String> columns = feat_map.get("TAR");

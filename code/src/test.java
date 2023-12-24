@@ -22,7 +22,7 @@ public class test {
 
         String dbURL = "jdbc:sqlserver://localhost\\SQLSERVER19:1433;databaseName=AdventureWorksDW2016;encrypt=false;trustServerCertificate=false";
         String user = "sa";
-        String pass = "JBoussouf";
+        String pass = "123";
         Connection conn;
         DataWarehouse dw = new DataWarehouse();
         try {
@@ -43,7 +43,7 @@ public class test {
 //        myList.add("last_name");
 
 
-        CSVFileExtractor csvExtractor = new CSVFileExtractor("C:\\Users\\Administrateur\\Desktop\\tab1.csv");
+        CSVFileExtractor csvExtractor = new CSVFileExtractor("C:\\Users\\etabook\\Desktop\\TP1-DW\\code\\file\\tab1.csv");
         try {
             csvExtractor.extractData(columns);
             dw.loadPersonData(csvExtractor.getStringMap(), columns, "CSV","Person");

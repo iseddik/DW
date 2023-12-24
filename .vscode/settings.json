@@ -1,6 +1,13 @@
 {
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
-        "c:\\Users\\etabook\\Desktop\\mssql-jdbc-12.5.0.jre8-preview.jar"
+        "c:\\Users\\etabook\\Desktop\\mssql-jdbc-12.5.0.jre8-preview.jar",
+        "c:\\Users\\etabook\\Desktop\\solve\\commons-beanutils-1.9.4.jar",
+        "c:\\Users\\etabook\\Desktop\\solve\\commons-collections-3.2.2.jar",
+        "c:\\Users\\etabook\\Desktop\\solve\\commons-collections4-4.4.jar",
+        "c:\\Users\\etabook\\Desktop\\solve\\commons-lang3-3.13.0.jar",
+        "c:\\Users\\etabook\\Desktop\\solve\\commons-logging-1.2.jar",
+        "c:\\Users\\etabook\\Desktop\\solve\\commons-text-1.11.0.jar",
+        "c:\\Users\\etabook\\Desktop\\solve\\opencsv-5.9.jar"
     ]
 }
