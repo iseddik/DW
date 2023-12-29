@@ -4,21 +4,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SQLServerExtractor implements DataExtractor {
+public class SQLServerExtractor implements DataExtractor, Runnable{
 
     private Connection jdbcConnection;
     private String tableName;
     private Map<String, List<String>> stringMap;
+    private HashMap<String, List<String>> feat_map;
 
-    public SQLServerExtractor(String tableName, Connection jdbcConnection) {
+    public SQLServerExtractor(String tableName, Connection jdbcConnection, HashMap<String, List<String>> feat_map) {
         this.tableName = tableName;
         this.jdbcConnection = jdbcConnection;
         this.stringMap = new HashMap<>();
+        this.feat_map = feat_map;
     }
     
 
     @Override
-    public void extractData(HashMap<String, List<String>> feat_map) {
+    public void extractData() {
         List<String> columns = feat_map.get("SQL");
         String cls = "";
 
@@ -40,17 +42,10 @@ public class SQLServerExtractor implements DataExtractor {
 
             while (resultSet.next()) {
                 for (int i=0; i<columns.size(); i++){
+                    System.out.println("done!");
                     this.stringMap.get(columns.get(i)).add(resultSet.getString(columns.get(i)).toString());
                 }
             }
-
-             
-//            for(int i=0; i<stringMap.get(columns.get(0)).size(); i++){
-//                for (String el: columns){
-//                    System.out.print(stringMap.get(el).get(i) + "\t");
-//                }
-//                System.out.println();
-//            }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -59,5 +54,11 @@ public class SQLServerExtractor implements DataExtractor {
 
     public Map<String, List<String>> getStringMap() {
         return stringMap;
+    }
+
+
+    @Override
+    public void run() {
+        this.extractData();
     }
 }

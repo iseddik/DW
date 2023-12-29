@@ -11,18 +11,20 @@ import java.util.List;
 import java.util.Map;
 
 
-public class ExcelFileExtractor implements DataExtractor {
+public class ExcelFileExtractor implements DataExtractor, Runnable {
 
     private String path;
     private Map<String, List<String>> stringMap;
+    private HashMap<String, List<String>> feat_map;
 
-    public ExcelFileExtractor(String path) {
+    public ExcelFileExtractor(String path, HashMap<String, List<String>> feat_map) {
         this.path = path;
         this.stringMap = new HashMap<>();
+        this.feat_map = feat_map;
     }
 
     @Override
-    public void extractData(HashMap<String, List<String>> feat_map) throws Exception {
+    public void extractData() throws Exception {
         List<String> columns = feat_map.get("XLS");
         Map<String, Integer> clmn_map = new HashMap<>();
         for(String el: columns){
@@ -73,29 +75,12 @@ public class ExcelFileExtractor implements DataExtractor {
         return stringMap;
     }
 
-    /* 
-    public static void main(String[] args) {
+    @Override
+    public void run() {
         try {
-            // Create a workbook instance and specify the path to your Excel file
-            Workbook workbook = Workbook.getWorkbook(new File("C:\\Users\\etabook\\Desktop\\TP1-DW\\code\\file\\tab1.xls"));
-
-            // Get the first sheet of the workbook
-            Sheet sheet = workbook.getSheet(0);
-
-            // Iterate through the rows and columns to read the data
-            for (int i = 0; i < sheet.getRows(); i++) {
-                for (int j = 0; j < sheet.getColumns(); j++) {
-                    Cell cell = sheet.getCell(j, i); // Get the cell
-                    System.out.print(cell.getContents() + "\t"); // Display cell contents
-                }
-                System.out.println(); // Move to the next line for the new row
-            }
-
-            // Close the workbook to release resources
-            workbook.close();
-
-        } catch (IOException | BiffException e) {
+            this.extractData();
+        } catch (Exception e) {
             e.printStackTrace();
         }
-    } */
+    }
 }

@@ -29,27 +29,32 @@ public class test {
         Connection conn;
         DataWarehouse dw = new DataWarehouse();
         SQLServerExtractor sqlExtractor;
+        Thread[] threads = new Thread[3];
 
+        long startTime = System.currentTimeMillis();
         // Extract data from different sources :
         try {
             // From SQLSERVER
             conn = DriverManager.getConnection(dbURL, user, pass);
             if (conn != null) {
                 System.out.println("Connected!");
-                sqlExtractor = new SQLServerExtractor("DimEmployee", conn);
-                sqlExtractor.extractData(columns);
+                sqlExtractor = new SQLServerExtractor("DimEmployee", conn, columns);
+                threads[0] = new Thread(sqlExtractor);
+                threads[0].start();
                 dw.loadPersonData(sqlExtractor.getStringMap(), columns, "SQL", "Person");
             }
 
             // From CSV FILE
             CSVFileExtractor csvExtractor = new CSVFileExtractor(
-                    "C:\\Users\\etabook\\Desktop\\TP1-DW\\code\\file\\tab1.csv");
-            csvExtractor.extractData(columns);
+                    "C:\\Users\\etabook\\Desktop\\TP1-DW\\code\\file\\tab1.csv", columns);
+            threads[1] = new Thread(csvExtractor);
+            threads[1].start();
 
             // From XLS FILE
             ExcelFileExtractor xlsExtractor = new ExcelFileExtractor(
-                    "C:\\Users\\etabook\\Desktop\\TP1-DW\\code\\file\\tab1.xls");
-            xlsExtractor.extractData(columns);
+                    "C:\\Users\\etabook\\Desktop\\TP1-DW\\code\\file\\tab1.xls", columns);
+            threads[2] = new Thread(xlsExtractor);
+            threads[2].start();
 
             dw.loadPersonData(csvExtractor.getStringMap(), columns, "CSV", "Person");
             dw.loadPersonData(xlsExtractor.getStringMap(), columns, "XLS", "Person");
@@ -60,5 +65,9 @@ public class test {
             throw new RuntimeException(e);
         }
 
+        long endTime = System.currentTimeMillis(); // Capture end time
+        long elapsedTime = endTime - startTime;
+
+        System.out.println("Elapsed time: " + elapsedTime + " milliseconds");
     }
 }

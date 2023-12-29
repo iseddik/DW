@@ -8,21 +8,23 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.RunnableFuture;
+// import java.util.concurrent.RunnableFuture;
 import java.util.HashMap;
 
-public class CSVFileExtractor implements DataExtractor{
+public class CSVFileExtractor implements DataExtractor, Runnable{
     private String path;
     private Map<String, List<String>> stringMap;
+    private HashMap<String, List<String>> feat_map;
 
-    public CSVFileExtractor(String path) {
+    public CSVFileExtractor(String path, HashMap<String, List<String>> feat_map) {
         this.path = path;
         this.stringMap = new HashMap<>();
+        this.feat_map = feat_map;
     }
 
 
     @Override
-    public void extractData(HashMap<String, List<String>> feat_map) throws Exception {
+    public void extractData() throws Exception {
         List<String> columns = feat_map.get("CSV");
         Map<String, Integer> clmn_map = new HashMap<>();
         for(String el: columns){
@@ -88,6 +90,17 @@ public class CSVFileExtractor implements DataExtractor{
 
     public Map<String, List<String>> getStringMap() {
         return stringMap;
+    }
+
+
+    @Override
+    public void run() {
+        try {
+            this.extractData();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
 
