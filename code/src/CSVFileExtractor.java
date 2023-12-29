@@ -8,9 +8,10 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.RunnableFuture;
 import java.util.HashMap;
 
-public class CSVFileExtractor implements DataExtractor {
+public class CSVFileExtractor implements DataExtractor{
     private String path;
     private Map<String, List<String>> stringMap;
 
@@ -31,6 +32,7 @@ public class CSVFileExtractor implements DataExtractor {
 
         String [] record;
         CSVReader csvReader = null;
+        
 
         try {
             csvReader = new CSVReaderBuilder(new FileReader(file))
@@ -39,7 +41,7 @@ public class CSVFileExtractor implements DataExtractor {
                             .build())
                     .build();
 
-            int currentLine = 0;
+            
             String[] tmp = csvReader.readNext();
             for(String el : columns){
                 for(int i=0; i<tmp.length; i++){
@@ -55,6 +57,7 @@ public class CSVFileExtractor implements DataExtractor {
             for(String cls : clmn_map.keySet()){
                 System.out.println("------> "+clmn_map.get(cls));
             }
+            // int currentLine = 0;
             while ((record = csvReader.readNext()) != null) {
 
                 for (String el: clmn_map.keySet()){
@@ -73,7 +76,7 @@ public class CSVFileExtractor implements DataExtractor {
 //                        )
 //                );
 
-                currentLine++;
+                //currentLine++;
             }
         } finally {
             //Close the reader
@@ -86,4 +89,7 @@ public class CSVFileExtractor implements DataExtractor {
     public Map<String, List<String>> getStringMap() {
         return stringMap;
     }
+
+
+    
 }

@@ -22,12 +22,9 @@ public class DataWarehouse {
         }
 
         try {
-
             this.conn = DriverManager.getConnection(dbURL, user, pass);
-
             for (int i=0; i<stringMap.get(src.get(0)).size(); i++) {
                 String Query="INSERT INTO "+tableName+" ("+cls+") values (";
-                String values = "";
                 for (int j=0; j<columns.size(); j++){
                     if (j==columns.size()-1){
                         Query += "?)";
