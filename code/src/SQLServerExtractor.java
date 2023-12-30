@@ -70,6 +70,7 @@ public class SQLServerExtractor implements DataExtractor, Runnable{
                 //System.out.println();
             }
 
+            //System.out.println(stringMap.get("FirstName").size());
         } catch (SQLException e) {
             e.printStackTrace();
         }

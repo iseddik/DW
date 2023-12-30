@@ -2,6 +2,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class test {
 
@@ -25,12 +26,13 @@ public class test {
 
         String dbURL = "jdbc:sqlserver://localhost\\SQLSERVER19:1433;databaseName=AdventureWorksDW2016;encrypt=false;trustServerCertificate=false";
         String user = "sa";
-        String pass = "123";
+        String pass = "JBoussouf";
         Connection conn;
-        DataWarehouse dw = new DataWarehouse();
         SQLServerExtractor sqlExtractor;
         ArrayList<Thread> threads = new ArrayList<>();
         int sizeSqlServer;
+        ArrayList<SQLServerExtractor> sql = new ArrayList<>();
+        HashMap<String, ArrayList<Map<String, List<String>>>> data = new HashMap<>();
 
         
         // Extract data from different sources :
@@ -43,45 +45,71 @@ public class test {
                 sizeSqlServer = sqlExtractor.serverSize();
                 
                 for(int i=0; i<sizeSqlServer; i=i+69){
-                    sqlExtractor = new SQLServerExtractor("DimEmployee", conn, columns, (i == 0)?i: i+1, i+69);
-                    Thread th = new Thread(sqlExtractor);
+                    sqlExtractor = new SQLServerExtractor("DimEmployee", conn, columns, i, 69);
+                    Thread th = new Thread(sqlExtractor);//(i==0)?i:i+1
                     //th.start();
+                    sql.add(sqlExtractor);
                     threads.add(th);
                 }
                 
                 CSVFileExtractor csvExtractor = new CSVFileExtractor(
-                    "C:\\Users\\etabook\\Desktop\\TP1-DW\\code\\file\\tab1.csv", columns);
+                    "C:\\Users\\Administrateur\\Desktop\\tab1.csv", columns);
                 threads.add(new Thread(csvExtractor));
 
                 ExcelFileExtractor xlsExtractor = new ExcelFileExtractor(
-                    "C:\\Users\\etabook\\Desktop\\TP1-DW\\code\\file\\tab1.xls", columns);
+                    "C:\\Users\\Administrateur\\Desktop\\tab1.xls", columns);
                 threads.add(new Thread(xlsExtractor));
 
 
-                long startTime = System.currentTimeMillis();
+
 
                 for(Thread th: threads){
                     th.start();
                 }
-                
                 for(Thread th: threads){
                     th.join();
                 }
 
                 threads.clear();
 
+//                for (SQLServerExtractor s: sql){
+//                    System.out.println(s.getStringMap().get("FirstName").size());
+//                }
+
+                //System.out.println(sqlExtractor.getStringMap().get("FirstName").size());
+
+                data.put("CSV", new ArrayList<>());
+                data.get("CSV").add(csvExtractor.getStringMap());
+
+                data.put("XLS", new ArrayList<>());
+                data.get("XLS").add(xlsExtractor.getStringMap());
+
+                data.put("SQL", new ArrayList<>());
+                for(SQLServerExtractor s: sql){
+                    data.get("SQL").add(s.getStringMap());
+                }
+
+                for (String key: data.keySet()){
+                    //System.out.println(data.get(key));
+                    for(Map<String, List<String>> el: data.get(key)){
+
+                        DataWarehouse dw = new DataWarehouse(el, columns, key, "Person");
+                        threads.add(new Thread(dw));
+                    }
+
+                }
+                long startTime = System.currentTimeMillis();
+                for(Thread th:threads){
+                    th.start();
+                }
+                for(Thread th:threads){
+                    th.join();
+                }
+
                 long endTime = System.currentTimeMillis(); // Capture end time
                 long elapsedTime = endTime - startTime;
 
                 System.out.println("Elapsed time: " + elapsedTime + " milliseconds");
-
-                for(String clmns: columns.keySet()){
-
-                }
-
-                dw.loadPersonData(sqlExtractor.getStringMap(), columns, "SQL", "Person");
-                dw.loadPersonData(csvExtractor.getStringMap(), columns, "CSV", "Person");
-                dw.loadPersonData(xlsExtractor.getStringMap(), columns, "XLS", "Person");
             }
 
             // From CSV FILE

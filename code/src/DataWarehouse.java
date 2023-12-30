@@ -3,22 +3,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DataWarehouse {
+public class DataWarehouse implements Runnable{
     private String dbURL = "jdbc:sqlserver://localhost\\SQLSERVER19:1433;databaseName=Hello;encrypt=false;trustServerCertificate=false";
     private String user = "sa";
-    private String pass = "123";
+    private String pass = "JBoussouf";
     private Connection conn;
 
     private Map<String, List<String>> stringMap;
     private HashMap<String, List<String>> feat_map;
     private String source;
     private String tableName;
-    
-    public DataWarehouse() {
+
+    public DataWarehouse(Map<String, List<String>> stringMap, HashMap<String, List<String>> feat_map, String source, String tableName) {
+        this.stringMap = stringMap;
+        this.feat_map = feat_map;
+        this.source = source;
+        this.tableName = tableName;
     }
 
-
-    public void loadPersonData(Map<String, List<String>> stringMap, HashMap<String, List<String>> feat_map,String source,String tableName){
+    public void loadPersonData(){
         List<String> columns = feat_map.get("TAR");
         List<String> src = feat_map.get(source);
 
@@ -49,10 +52,8 @@ public class DataWarehouse {
                 }
 
                 //System.out.println(Query);
-                int rowsInserted = st.executeUpdate();
-                if (rowsInserted > 0){
-                    System.out.println("user succefuly added");
-                }
+                st.executeUpdate();
+
 
 //                System.out.println(personData.getString("LastName"));
             }
@@ -61,5 +62,10 @@ public class DataWarehouse {
             throw new RuntimeException(e);
         }
 
+    }
+
+    @Override
+    public void run() {
+        this.loadPersonData();
     }
 }
