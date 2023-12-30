@@ -8,6 +8,16 @@ public class DataWarehouse {
     private String user = "sa";
     private String pass = "123";
     private Connection conn;
+
+    private Map<String, List<String>> stringMap;
+    private HashMap<String, List<String>> feat_map;
+    private String source;
+    private String tableName;
+    
+    public DataWarehouse() {
+    }
+
+
     public void loadPersonData(Map<String, List<String>> stringMap, HashMap<String, List<String>> feat_map,String source,String tableName){
         List<String> columns = feat_map.get("TAR");
         List<String> src = feat_map.get(source);

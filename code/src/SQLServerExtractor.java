@@ -10,14 +10,36 @@ public class SQLServerExtractor implements DataExtractor, Runnable{
     private String tableName;
     private Map<String, List<String>> stringMap;
     private HashMap<String, List<String>> feat_map;
+    private int start;
+    private int end;
 
-    public SQLServerExtractor(String tableName, Connection jdbcConnection, HashMap<String, List<String>> feat_map) {
+    public SQLServerExtractor(String tableName, Connection jdbcConnection, HashMap<String, List<String>> feat_map, int start, int end) {
         this.tableName = tableName;
         this.jdbcConnection = jdbcConnection;
         this.stringMap = new HashMap<>();
         this.feat_map = feat_map;
+        this.start = start;
+        this.end = end;
     }
     
+
+    public int serverSize(){
+        Statement statement;
+        try {
+            statement = this.jdbcConnection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT count(*) from " + this.tableName);
+            resultSet.next();
+
+            // Get the count as an integer
+            int count = resultSet.getInt(1);
+            //System.out.println(count);
+            return count;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+        
+    }
 
     @Override
     public void extractData() {
@@ -34,7 +56,7 @@ public class SQLServerExtractor implements DataExtractor, Runnable{
 
         try {
             Statement statement = this.jdbcConnection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT "+cls+" FROM " + this.tableName);
+            ResultSet resultSet = statement.executeQuery("SELECT "+cls+" FROM " + this.tableName + " Order by EmployeeKey " + "OFFSET " + this.start + " ROWS FETCH NEXT " + this.end + " ROWS ONLY");
 
             for (int i=0; i<columns.size(); i++){
                 this.stringMap.put(columns.get(i), new ArrayList<>());
@@ -42,9 +64,10 @@ public class SQLServerExtractor implements DataExtractor, Runnable{
 
             while (resultSet.next()) {
                 for (int i=0; i<columns.size(); i++){
-                    System.out.println("done!");
+                    //System.out.print(resultSet.getString(columns.get(i)).toString());
                     this.stringMap.get(columns.get(i)).add(resultSet.getString(columns.get(i)).toString());
                 }
+                //System.out.println();
             }
 
         } catch (SQLException e) {
