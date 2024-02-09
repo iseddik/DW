@@ -72,12 +72,6 @@ public class test {
 
                 threads.clear();
 
-//                for (SQLServerExtractor s: sql){
-//                    System.out.println(s.getStringMap().get("FirstName").size());
-//                }
-
-                //System.out.println(sqlExtractor.getStringMap().get("FirstName").size());
-
                 data.put("CSV", new ArrayList<>());
                 data.get("CSV").add(csvExtractor.getStringMap());
 
@@ -112,10 +106,6 @@ public class test {
                 System.out.println("Elapsed time: " + elapsedTime + " milliseconds");
             }
 
-            // From CSV FILE
-            
-
-            // From XLS FILE
             
 
             
