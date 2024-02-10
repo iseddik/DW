@@ -51,9 +51,11 @@ public class SQLServerExtractor implements DataExtractor, Runnable{
             }
         }
 
+
+        
         try {
             Statement statement = this.jdbcConnection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT "+cls+" FROM " + this.tableName + " Order by CustomerKey " + "OFFSET " + this.start + " ROWS FETCH NEXT " + this.end + " ROWS ONLY");
+            ResultSet resultSet = statement.executeQuery("SELECT "+cls+" FROM " + this.tableName + " Order by OrderDateKey " + "OFFSET " + this.start + " ROWS FETCH NEXT " + this.end + " ROWS ONLY");
 
             for (int i=0; i<columns.size(); i++){
                 this.stringMap.put(columns.get(i), new ArrayList<>());

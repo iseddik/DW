@@ -10,8 +10,7 @@ public class UpperCaseTransformer {
         if ( data.get(source).get(0).get(column) != null ) {
             for (int i = 0; i < data.get(source).size(); i++){
                 for (String ele : data.get(source).get(0).get(column)) {
-                    // Do any transform that you want on this element from the given column !
-                    System.out.println(ele);
+                    System.out.println(ele.toUpperCase());
                 }
             }
         } else {

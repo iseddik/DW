@@ -45,46 +45,29 @@ public class CSVFileExtractor implements DataExtractor, Runnable{
 
             
             String[] tmp = csvReader.readNext();
-            // please explain me this one !!!
+            // !!!
             for(String el : columns){
-                System.out.println(el);
                 for(int i=0; i<tmp.length; i++){
-                    System.out.println(el +" \t "+ tmp[i]);
-                    if(el.equals(tmp[i]) || el.equals("id")){
+                    if(el.equals(tmp[i])){
                         clmn_map.put(el, i);
-                        
                     }
-                }
+                } 
             }
+
             System.out.println(clmn_map);
             if (clmn_map.isEmpty()){
                 System.out.println("parameters not exist in your csv file");
             }
 
            
-            // int currentLine = 0;
+            
             while ((record = csvReader.readNext()) != null) {
-                //System.out.println(clmn_map.keySet());
                 for (String el: clmn_map.keySet()){
-                    //System.out.print(el+ ": "+record[clmn_map.get(el)]+"\t");
                     this.stringMap.get(el).add(record[clmn_map.get(el)]);
                 }
-                //System.out.println();
-//                System.out.println(
-//                        String.format(
-//                                "Line %d Col1: %s Col2: %s Col3: %s Col4: %s",
-//                                currentLine,
-//                                record[0],
-//                                record[1],
-//                                record[2],
-//                                record[3]
-//                        )
-//                );
-
-                //currentLine++;
             }
+
         } finally {
-            //Close the reader
             if (csvReader != null) {
                 csvReader.close();
             }
