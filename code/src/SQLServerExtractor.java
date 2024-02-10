@@ -29,10 +29,7 @@ public class SQLServerExtractor implements DataExtractor, Runnable{
             statement = this.jdbcConnection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT count(*) from " + this.tableName);
             resultSet.next();
-
-            // Get the count as an integer
             int count = resultSet.getInt(1);
-            //System.out.println(count);
             return count;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -56,7 +53,7 @@ public class SQLServerExtractor implements DataExtractor, Runnable{
 
         try {
             Statement statement = this.jdbcConnection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT "+cls+" FROM " + this.tableName + " Order by EmployeeKey " + "OFFSET " + this.start + " ROWS FETCH NEXT " + this.end + " ROWS ONLY");
+            ResultSet resultSet = statement.executeQuery("SELECT "+cls+" FROM " + this.tableName + " Order by CustomerKey " + "OFFSET " + this.start + " ROWS FETCH NEXT " + this.end + " ROWS ONLY");
 
             for (int i=0; i<columns.size(); i++){
                 this.stringMap.put(columns.get(i), new ArrayList<>());
@@ -64,13 +61,11 @@ public class SQLServerExtractor implements DataExtractor, Runnable{
 
             while (resultSet.next()) {
                 for (int i=0; i<columns.size(); i++){
-                    //System.out.print(resultSet.getString(columns.get(i)).toString());
                     this.stringMap.get(columns.get(i)).add(resultSet.getString(columns.get(i)).toString());
                 }
-                //System.out.println();
+                
             }
 
-            //System.out.println(stringMap.get("FirstName").size());
         } catch (SQLException e) {
             e.printStackTrace();
         }
