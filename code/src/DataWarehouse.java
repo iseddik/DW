@@ -6,7 +6,7 @@ import java.util.Map;
 public class DataWarehouse implements Runnable{
     private String dbURL = "jdbc:sqlserver://localhost\\SQLSERVER19:1433;databaseName=Hello;encrypt=false;trustServerCertificate=false";
     private String user = "sa";
-    private String pass = "123";
+    private String pass = "JBoussouf";
     private Connection conn;
 
     private Map<String, List<String>> stringMap;

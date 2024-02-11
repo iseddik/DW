@@ -24,9 +24,24 @@ public class test {
         columns.get("TAR").add("FirstName");
         columns.get("TAR").add("LastName");
 
+
+        //name mapping between data resources and target
+        HashMap<String, Map<String, String>> maching = new HashMap<>();
+        maching.put("XLS", new HashMap<>());
+        maching.get("XLS").put("first_name", "FirstName");
+        maching.get("XLS").put("last_name", "LastName");
+
+        maching.put("CSV", new HashMap<>());
+        maching.get("CSV").put("first_name", "FirstName");
+        maching.get("CSV").put("last_name", "LastName");
+
+        maching.put("SQL", new HashMap<>());
+        maching.get("SQL").put("FirstName", "FirstName");
+        maching.get("SQL").put("LastName", "LastName");
+
         String dbURL = "jdbc:sqlserver://localhost\\SQLSERVER19:1433;databaseName=AdventureWorksDW2016;encrypt=false;trustServerCertificate=false";
         String user = "sa";
-        String pass = "123";
+        String pass = "JBoussouf";
         Connection conn;
 
         SQLServerExtractor sqlExtractor;
@@ -42,22 +57,22 @@ public class test {
             conn = DriverManager.getConnection(dbURL, user, pass);
             if (conn != null) {
                 System.out.println("Connected!");
-                sqlExtractor = new SQLServerExtractor("DimEmployee", conn, columns, 1, 2);
+                sqlExtractor = new SQLServerExtractor("DimEmployee", conn, columns, 1, 2, maching.get("SQL"));
                 sizeSqlServer = sqlExtractor.serverSize();
                 
                 for(int i=0; i<sizeSqlServer; i=i+69){
-                    sqlExtractor = new SQLServerExtractor("DimEmployee", conn, columns, i, 69);
+                    sqlExtractor = new SQLServerExtractor("DimEmployee", conn, columns, i, 69, maching.get("SQL"));
                     Thread th = new Thread(sqlExtractor);
                     sql.add(sqlExtractor);
                     threads.add(th);
                 }
                 
                 CSVFileExtractor csvExtractor = new CSVFileExtractor(
-                    "C:\\Users\\etabook\\Desktop\\TP1-DW\\code\\file\\tab1.csv", columns);
+                    "C:\\Users\\Administrateur\\Desktop\\tab1.csv", columns, maching.get("CSV"));
                 threads.add(new Thread(csvExtractor));
 
                 ExcelFileExtractor xlsExtractor = new ExcelFileExtractor(
-                    "C:\\Users\\etabook\\Desktop\\TP1-DW\\code\\file\\tab1.xls", columns);
+                    "C:\\Users\\Administrateur\\Desktop\\tab1.xls", columns, maching.get("XLS"));
                 threads.add(new Thread(xlsExtractor));
 
 
@@ -68,7 +83,7 @@ public class test {
                     th.join();
                 }
 
-                threads.clear();
+                //data chunks
 
                 data.put("CSV", new ArrayList<>());
                 data.get("CSV").add(csvExtractor.getStringMap());
@@ -81,30 +96,55 @@ public class test {
                     data.get("SQL").add(s.getStringMap());
                 }
 
+
                 // Data Transformation
 
-                UpperCaseTransformer.transformData(data, "first_name", "CSV");
-
-                // Data Loading
-                for (String key: data.keySet()){
-                    for(Map<String, List<String>> el: data.get(key)){
-                        DataWarehouse dw = new DataWarehouse(el, columns, key, "Person");
-                        threads.add(new Thread(dw));
+                threads.clear();
+                List<UpperCaseTransformer> upperCaseTransformers = new ArrayList<>();
+                List<String> cln_trans = new ArrayList<>();
+                cln_trans.add("FirstName");
+                for (String s: data.keySet()){
+                    for(Map<String, List<String>> el:data.get(s)){
+                        UpperCaseTransformer upperCaseTransformer = new UpperCaseTransformer(el, s, cln_trans);
+                        threads.add(new Thread(upperCaseTransformer));
+                        upperCaseTransformers.add(upperCaseTransformer);
                     }
-
                 }
-                long startTime = System.currentTimeMillis();
-                for(Thread th:threads){
+                for (Thread th: threads){
                     th.start();
                 }
-                for(Thread th:threads){
+                for (Thread th: threads){
                     th.join();
                 }
+                for (UpperCaseTransformer u:upperCaseTransformers){
+                    System.out.println(u.getSource()+" ----> "+u.getData());
+                }
 
-                long endTime = System.currentTimeMillis(); // Capture end time
-                long elapsedTime = endTime - startTime;
 
-                System.out.println("Elapsed time: " + elapsedTime + " milliseconds");
+
+                threads.clear();
+
+                // Data Loading
+
+//                for (String key: data.keySet()){
+//                    for(Map<String, List<String>> el: data.get(key)){
+//                        DataWarehouse dw = new DataWarehouse(el, columns, key, "Person");
+//                        threads.add(new Thread(dw));
+//                    }
+//
+//                }
+//                long startTime = System.currentTimeMillis();
+//                for(Thread th:threads){
+//                    th.start();
+//                }
+//                for(Thread th:threads){
+//                    th.join();
+//                }
+
+//                long endTime = System.currentTimeMillis(); // Capture end time
+//                long elapsedTime = endTime - startTime;
+//
+//                System.out.println("Elapsed time: " + elapsedTime + " milliseconds");
             }
 
             

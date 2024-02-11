@@ -13,13 +13,15 @@ public class SQLServerExtractor implements DataExtractor, Runnable{
     private int start;
     private int end;
 
-    public SQLServerExtractor(String tableName, Connection jdbcConnection, HashMap<String, List<String>> feat_map, int start, int end) {
+    private Map<String, String> maching;
+    public SQLServerExtractor(String tableName, Connection jdbcConnection, HashMap<String, List<String>> feat_map, int start, int end,Map<String, String> maching) {
         this.tableName = tableName;
         this.jdbcConnection = jdbcConnection;
         this.stringMap = new HashMap<>();
         this.feat_map = feat_map;
         this.start = start;
         this.end = end;
+        this.maching = maching;
     }
     
 
@@ -58,14 +60,14 @@ public class SQLServerExtractor implements DataExtractor, Runnable{
             Statement statement = this.jdbcConnection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT "+cls+" FROM " + this.tableName + " Order by EmployeeKey " + "OFFSET " + this.start + " ROWS FETCH NEXT " + this.end + " ROWS ONLY");
 
-            for (int i=0; i<columns.size(); i++){
-                this.stringMap.put(columns.get(i), new ArrayList<>());
+            for (String el: columns){
+                this.stringMap.put(this.maching.get(el), new ArrayList<>());
             }
 
             while (resultSet.next()) {
                 for (int i=0; i<columns.size(); i++){
                     //System.out.print(resultSet.getString(columns.get(i)).toString());
-                    this.stringMap.get(columns.get(i)).add(resultSet.getString(columns.get(i)).toString());
+                    this.stringMap.get(maching.get(columns.get(i))).add(resultSet.getString(columns.get(i)).toString());
                 }
                 //System.out.println();
             }

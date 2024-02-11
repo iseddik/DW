@@ -16,11 +16,13 @@ public class ExcelFileExtractor implements DataExtractor, Runnable {
     private String path;
     private Map<String, List<String>> stringMap;
     private HashMap<String, List<String>> feat_map;
+    private Map<String, String> maching;
 
-    public ExcelFileExtractor(String path, HashMap<String, List<String>> feat_map) {
+    public ExcelFileExtractor(String path, HashMap<String, List<String>> feat_map, Map<String, String> maching) {
         this.path = path;
         this.stringMap = new HashMap<>();
         this.feat_map = feat_map;
+        this.maching = maching;
     }
 
     @Override
@@ -28,7 +30,7 @@ public class ExcelFileExtractor implements DataExtractor, Runnable {
         List<String> columns = feat_map.get("XLS");
         Map<String, Integer> clmn_map = new HashMap<>();
         for(String el: columns){
-            this.stringMap.put(el, new ArrayList<>());
+            this.stringMap.put(maching.get(el), new ArrayList<>());
         }
         File file = new File(path);
 
@@ -56,7 +58,7 @@ public class ExcelFileExtractor implements DataExtractor, Runnable {
             for (int i = 1; i < sheet.getRows(); i++) {
                 for (String el: clmn_map.keySet()) {
                     Cell cell = sheet.getCell(clmn_map.get(el), i); 
-                    this.stringMap.get(el).add(cell.getContents());  
+                    this.stringMap.get(maching.get(el)).add(cell.getContents());
                 }
             }
             

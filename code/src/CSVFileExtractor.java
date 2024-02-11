@@ -15,11 +15,13 @@ public class CSVFileExtractor implements DataExtractor, Runnable{
     private String path;
     private Map<String, List<String>> stringMap;
     private HashMap<String, List<String>> feat_map;
+    private Map<String, String> maching;
 
-    public CSVFileExtractor(String path, HashMap<String, List<String>> feat_map) {
+    public CSVFileExtractor(String path, HashMap<String, List<String>> feat_map, Map<String, String> maching) {
         this.path = path;
         this.stringMap = new HashMap<>();
         this.feat_map = feat_map;
+        this.maching = maching;
     }
 
 
@@ -28,7 +30,7 @@ public class CSVFileExtractor implements DataExtractor, Runnable{
         List<String> columns = feat_map.get("CSV");
         Map<String, Integer> clmn_map = new HashMap<>();
         for(String el: columns){
-            this.stringMap.put(el, new ArrayList<>());
+            this.stringMap.put(maching.get(el), new ArrayList<>());
         }
         File file = new File(path);
 
@@ -48,7 +50,7 @@ public class CSVFileExtractor implements DataExtractor, Runnable{
             for(String el : columns){
                 for(int i=0; i<tmp.length; i++){
                     if(el.equals(tmp[i])){
-                        clmn_map.put(el, i);
+                        clmn_map.put(maching.get(el), i);
                     }
                 }
             }

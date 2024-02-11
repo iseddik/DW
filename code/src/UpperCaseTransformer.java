@@ -3,20 +3,38 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class UpperCaseTransformer {
-
-    
-    public static void transformData(HashMap<String, ArrayList<Map<String, List<String>>>> data, String column, String source) {
-        if ( data.get(source).get(0).get(column) != null ) {
-            for (int i = 0; i < data.get(source).size(); i++){
-                for (String ele : data.get(source).get(0).get(column)) {
-                    // Do any transform that you want on this element from the given column !
-                    System.out.println(ele);
-                }
-            }
-        } else {
-            System.out.println("The given column doesn't exist!");
-        }
+public class UpperCaseTransformer implements Runnable{
+    private Map<String, List<String>> data;
+    private List<String> columns;
+    private String source;
+    public UpperCaseTransformer(Map<String, List<String>> data, String source, List<String> columns) {
+        this.data = data;
+        this.columns = columns;
+        this.source = source;
     }
-    
+
+    private void transformData() {
+        ArrayList<String> tmp = new ArrayList<>();
+        int i = 0;
+            for (String cl:columns) {
+                for (String el : data.get(cl)) {
+                    tmp.add(el.toUpperCase());
+                }
+                data.get(cl).clear();
+                data.get(cl).addAll(tmp);
+            }
+
+    }
+
+    public Map<String, List<String>> getData(){
+        return data;
+    }
+
+    public String getSource() {
+        return source;
+    }
+        @Override
+    public void run() {
+        this.transformData();
+    }
 }
