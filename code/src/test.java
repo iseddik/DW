@@ -8,11 +8,11 @@ public class test {
 
     public static void main(String[] args) {
         HashMap<String, List<String>> columns = new HashMap<>();
-        /* 
+
         columns.put("SQL", new ArrayList<>());
         columns.get("SQL").add("FirstName");
         columns.get("SQL").add("LastName");
-        columns.get("SQL").add("CustomerKey");
+        columns.get("SQL").add("EmployeeKey");
 
         columns.put("CSV", new ArrayList<>());
         columns.get("CSV").add("id");
@@ -28,15 +28,13 @@ public class test {
         columns.put("TAR", new ArrayList<>());
         columns.get("TAR").add("FirstName");
         columns.get("TAR").add("LastName");
-        columns.get("TAR").add("ID");*/
+        columns.get("TAR").add("ID");
 
-        columns.put("SQL", new ArrayList<>());
-        columns.get("SQL").add("OrderDate");
-        columns.get("SQL").add("OrderDateKey");
-        columns.get("SQL").add("CustomerKey"); 
-        columns.get("SQL").add("SalesAmount");
-
-        System.out.println(columns);
+//        columns.put("SQL", new ArrayList<>());
+//        columns.get("SQL").add("OrderDate");
+//        columns.get("SQL").add("OrderDateKey");
+//        columns.get("SQL").add("CustomerKey");
+//        columns.get("SQL").add("SalesAmount");
 
 
         //name mapping between data resources and target
@@ -71,93 +69,80 @@ public class test {
             conn = DriverManager.getConnection(dbURL, user, pass);
             if (conn != null) {
                 System.out.println("Connected!");
-<<<<<<< HEAD
                 sqlExtractor = new SQLServerExtractor("DimEmployee", conn, columns, 1, 2, maching.get("SQL"));
-=======
-                sqlExtractor = new SQLServerExtractor("FactInternetSales", conn, columns, 1, 2);
->>>>>>> f5895d122454364434322f9c2d67f439c863899f
+
                 sizeSqlServer = sqlExtractor.serverSize();
                 System.out.println(sizeSqlServer);
-                 
-                for(int i=0; i<sizeSqlServer; i=i+69){
-<<<<<<< HEAD
+
+                for (int i = 0; i < sizeSqlServer; i = i + 69) {
                     sqlExtractor = new SQLServerExtractor("DimEmployee", conn, columns, i, 69, maching.get("SQL"));
-=======
-                    sqlExtractor = new SQLServerExtractor("FactInternetSales", conn, columns, i, 69);
->>>>>>> f5895d122454364434322f9c2d67f439c863899f
+
                     Thread th = new Thread(sqlExtractor);
                     sql.add(sqlExtractor);
                     threads.add(th);
                 }
-                 
+
                 CSVFileExtractor csvExtractor = new CSVFileExtractor(
-                    "C:\\Users\\Administrateur\\Desktop\\tab1.csv", columns, maching.get("CSV"));
+                        "C:\\Users\\Administrateur\\Desktop\\tab1.csv", columns, maching.get("CSV"));
                 threads.add(new Thread(csvExtractor));
-                
+
                 ExcelFileExtractor xlsExtractor = new ExcelFileExtractor(
-<<<<<<< HEAD
-                    "C:\\Users\\Administrateur\\Desktop\\tab1.xls", columns, maching.get("XLS"));
-=======
-                    "C:\\Users\\etabook\\Desktop\\TP1-DW\\code\\file\\tab.xls", columns);
->>>>>>> f5895d122454364434322f9c2d67f439c863899f
+                        "C:\\Users\\Administrateur\\Desktop\\tab1.xls", columns, maching.get("XLS"));
+
                 threads.add(new Thread(xlsExtractor));
 
 
-                for(Thread th: threads){
+                for (Thread th : threads) {
                     th.start();
                 }
-                for(Thread th: threads){
+                for (Thread th : threads) {
                     th.join();
                 }
 
-<<<<<<< HEAD
                 //data chunks
 
-=======
-                threads.clear();
-                
-                
->>>>>>> f5895d122454364434322f9c2d67f439c863899f
                 data.put("CSV", new ArrayList<>());
                 data.get("CSV").add(csvExtractor.getStringMap());
-                
+
                 data.put("XLS", new ArrayList<>());
                 data.get("XLS").add(xlsExtractor.getStringMap());
 
                 data.put("SQL", new ArrayList<>());
-                for(SQLServerExtractor s: sql){
+                for (SQLServerExtractor s : sql) {
                     data.get("SQL").add(s.getStringMap());
                 }
 
 
-<<<<<<< HEAD
                 // Data Transformation
-
+                //uppercase transformation
                 threads.clear();
                 List<UpperCaseTransformer> upperCaseTransformers = new ArrayList<>();
                 List<String> cln_trans = new ArrayList<>();
                 cln_trans.add("FirstName");
-                for (String s: data.keySet()){
-                    for(Map<String, List<String>> el:data.get(s)){
+                for (String s : data.keySet()) {
+                    for (Map<String, List<String>> el : data.get(s)) {
                         UpperCaseTransformer upperCaseTransformer = new UpperCaseTransformer(el, s, cln_trans);
                         threads.add(new Thread(upperCaseTransformer));
                         upperCaseTransformers.add(upperCaseTransformer);
-=======
-                
-                 
-                // Data Transformation
 
-                UpperCaseTransformer.transformData(data, "last_name", "CSV");
-                
+                    }
+                }
 
-
+                for (Thread th : threads) {
+                    th.start();
+                }
+                for (Thread th : threads) {
+                    th.join();
+                }
+                for (UpperCaseTransformer u:upperCaseTransformers){
+                    System.out.println(u.getSource()+" ----> "+u.getData());
+                }
                 /* 
                 // Data Loading
                 for (String key: data.keySet()){
                     for(Map<String, List<String>> el: data.get(key)){
                         DataWarehouse dw = new DataWarehouse(el, columns, key, "Person");
                         threads.add(new Thread(dw));
->>>>>>> f5895d122454364434322f9c2d67f439c863899f
                     }
                 }
                 for (Thread th: threads){
@@ -170,52 +155,17 @@ public class test {
                     System.out.println(u.getSource()+" ----> "+u.getData());
                 }
 
-<<<<<<< HEAD
 
-
-                threads.clear();
-
-                // Data Loading
-
-//                for (String key: data.keySet()){
-//                    for(Map<String, List<String>> el: data.get(key)){
-//                        DataWarehouse dw = new DataWarehouse(el, columns, key, "Person");
-//                        threads.add(new Thread(dw));
-//                    }
-//
-//                }
-//                long startTime = System.currentTimeMillis();
-//                for(Thread th:threads){
-//                    th.start();
-//                }
-//                for(Thread th:threads){
-//                    th.join();
-//                }
-
-//                long endTime = System.currentTimeMillis(); // Capture end time
-//                long elapsedTime = endTime - startTime;
-//
-//                System.out.println("Elapsed time: " + elapsedTime + " milliseconds");
-=======
                 long endTime = System.currentTimeMillis();
                 long elapsedTime = endTime - startTime;
 
                 System.out.println("Elapsed time: " + elapsedTime + " milliseconds");*/
->>>>>>> f5895d122454364434322f9c2d67f439c863899f
+
+
             }
-
-            
-
-            
-
-        } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
-        } catch (Exception e) {
+        }catch (SQLException sqlException){
+            System.out.println(sqlException);} catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-
-        
     }
-
-    
 }

@@ -56,7 +56,6 @@ public class CSVFileExtractor implements DataExtractor, Runnable{
                 } 
             }
 
-            System.out.println(clmn_map);
             if (clmn_map.isEmpty()){
                 System.out.println("parameters not exist in your csv file");
             }
