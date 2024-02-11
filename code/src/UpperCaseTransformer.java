@@ -3,6 +3,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+<<<<<<< HEAD
 public class UpperCaseTransformer implements Runnable{
     private Map<String, List<String>> data;
     private List<String> columns;
@@ -36,5 +37,20 @@ public class UpperCaseTransformer implements Runnable{
         @Override
     public void run() {
         this.transformData();
+=======
+public class UpperCaseTransformer {
+
+    
+    public static void transformData(HashMap<String, ArrayList<Map<String, List<String>>>> data, String column, String source) {
+        if ( data.get(source).get(0).get(column) != null ) {
+            for (int i = 0; i < data.get(source).size(); i++){
+                for (String ele : data.get(source).get(0).get(column)) {
+                    System.out.println(ele.toUpperCase());
+                }
+            }
+        } else {
+            System.out.println("The given column doesn't exist!");
+        }
+>>>>>>> f5895d122454364434322f9c2d67f439c863899f
     }
 }
