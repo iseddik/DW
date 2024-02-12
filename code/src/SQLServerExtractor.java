@@ -12,9 +12,10 @@ public class SQLServerExtractor implements DataExtractor, Runnable{
     private HashMap<String, List<String>> feat_map;
     private int start;
     private int end;
+    private String pk;
 
     private Map<String, String> maching;
-    public SQLServerExtractor(String tableName, Connection jdbcConnection, HashMap<String, List<String>> feat_map, int start, int end,Map<String, String> maching) {
+    public SQLServerExtractor(String tableName, Connection jdbcConnection, HashMap<String, List<String>> feat_map, int start, int end,Map<String, String> maching, String pk) {
         this.tableName = tableName;
         this.jdbcConnection = jdbcConnection;
         this.stringMap = new HashMap<>();
@@ -22,6 +23,7 @@ public class SQLServerExtractor implements DataExtractor, Runnable{
         this.start = start;
         this.end = end;
         this.maching = maching;
+        this.pk = pk;
     }
     
 
@@ -57,7 +59,7 @@ public class SQLServerExtractor implements DataExtractor, Runnable{
         
         try {
             Statement statement = this.jdbcConnection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT "+cls+" FROM " + this.tableName + " Order by EmployeeKey " + "OFFSET " + this.start + " ROWS FETCH NEXT " + this.end + " ROWS ONLY");
+            ResultSet resultSet = statement.executeQuery("SELECT "+cls+" FROM " + this.tableName + " Order by "+this.pk+ " OFFSET " + this.start + " ROWS FETCH NEXT " + this.end + " ROWS ONLY");
 
             for (String el: columns){
                 this.stringMap.put(this.maching.get(el), new ArrayList<>());
