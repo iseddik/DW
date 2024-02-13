@@ -30,7 +30,6 @@ public class SQLExtractorByTableName implements Runnable{
         for (String s: cln){
             columns.get("SQL").add(s);
         }
-        System.out.println(columns);
 
 
         String dbURL = "jdbc:sqlserver://localhost\\SQLSERVER19:1433;databaseName=AdventureWorksDW2016;encrypt=false;trustServerCertificate=false";

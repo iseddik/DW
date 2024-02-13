@@ -7,6 +7,58 @@ import java.util.List;
 import java.util.Map;
 
 public class TP2Main {
+    public static void upperCase(ArrayList<SQLExtractorByTableName> tables, String tableName, ArrayList<String> columns){
+
+        ArrayList<Thread> threads = new ArrayList<>();
+        List<UpperCaseTransformer> upperCaseTransformers = new ArrayList<>();
+        for (SQLExtractorByTableName table: tables){
+            if (table.getSource().equals(tableName)){
+                for (String chunks_name:table.getData().keySet()){
+                    for (Map<String, List<String>> chunks:table.getData().get(chunks_name)){
+                        UpperCaseTransformer upperCaseTransformer = new UpperCaseTransformer(chunks, chunks_name, columns);
+                        threads.add(new Thread(upperCaseTransformer));
+                        upperCaseTransformers.add(upperCaseTransformer);
+                    }
+
+                }
+            }
+        }
+
+        for (Thread th : threads) {
+            th.start();
+        }
+        for (Thread th : threads) {
+            try {
+                th.join();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        for (UpperCaseTransformer u:upperCaseTransformers){
+            System.out.println(u.getSource()+" ----> "+u.getData());
+        }
+    }
+
+    public static void amountSummarize(String sourceData, String targetData, ArrayList<SQLExtractorByTableName> sqlExtractorByTableName,String feacher_source,String feacher_target){
+        HashMap<String, ArrayList<Map<String, List<String>>>> source_chunks = new HashMap<>();
+        HashMap<String, ArrayList<Map<String, List<String>>>> target_chunks = new HashMap<>();
+        for (SQLExtractorByTableName table:sqlExtractorByTableName){
+            if (table.getSource().equals(sourceData)){
+                source_chunks = table.getData();
+            } else if (table.getSource().equals(targetData)) {
+                target_chunks = table.getData();
+            }
+        }
+        ArrayList<SalesAmountSummarizer> salesAmountSummarizers = new ArrayList<>();
+        for(String source:source_chunks.keySet()){
+            for (Map<String, List<String>> chunk:source_chunks.get(source)){
+                SalesAmountSummarizer salesAmountSummarizer = new SalesAmountSummarizer(chunk, target_chunks, feacher_source, feacher_target);
+                salesAmountSummarizer.amountForEachUser();
+                salesAmountSummarizers.add(salesAmountSummarizer);
+            }
+        }
+
+    }
 
     public static void main(String[] args) {
 
@@ -60,12 +112,14 @@ public class TP2Main {
                 throw new RuntimeException(e);
             }
         }
-        
-        for (SQLExtractorByTableName table:sqlExtractorByTableName){
-            System.out.println(table.getSource() + " ----> "+table.getData());
-        }
+
+//        ArrayList<String> cln = new ArrayList<>();
+//        cln.add("FirstName");
+//        upperCase(sqlExtractorByTableName, "DimCustomer", cln);
 
 
+
+        amountSummarize("DimCustomer", "FactInternetSales", sqlExtractorByTableName, "SalesAmount", "CustomerKey");
 
 
 
